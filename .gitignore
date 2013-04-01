@@ -1,0 +1,4 @@
+*.pyc
+/pymdb.egg-info/
+/dist/
+/build/

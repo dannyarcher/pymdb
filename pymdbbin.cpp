@@ -52,7 +52,7 @@ static PyObject* tablenames(MdbHandle * mdb){
 }
 	
 
-static PyObject* parsefile_table_dictionary(PyObject* self, PyObject* args)
+static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 {			
 	
 	PyObject *tableList = NULL, *dbDictionary = NULL, *tableDictionary = NULL;
