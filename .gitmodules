@@ -1,0 +1,3 @@
+[submodule "mdbtools"]
+	path = mdbtools
+	url = git://github.com/brianb/mdbtools.git
