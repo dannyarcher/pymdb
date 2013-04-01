@@ -2,25 +2,20 @@
 #include <stdio.h>
 #include <mdbtools.h>
 
-
-#ifdef IS_PYTHON3
-	 #define PY_STR(s) PyString_AsString(s)
+#if PY_MAJOR_VERSION >= 3
+	#define pymdb_object_to_char_p(o)	PyUnicode_AS_DATA(PyObject_Repr(o))
+	#define pymdb_char_p_to_str(o)		PyBytes_FromString(o)
 #else
-	#define PY_STR(s) PyBytes_AsString(s)
+	#define pymdb_object_to_char_p(o)	PyString_AsString(o)
+	#define pymdb_char_p_to_str(o)		PyString_FromString(o)
+	
 #endif
+	
 
-
-#ifdef IS_PYTHON3
-	#define PY_FROM_STR(s) PyString_FromString(s)
-#else
-	#define PY_FROM_STR(s) PyBytes_FromString(s)
-#endif
  
 void logObject (PyObject* o)
 {
-	PyObject * objectsRepresentation = PyObject_Repr(o);
-	char * s = PY_STR(objectsRepresentation);
-	printf("\n%s\n",s);
+	printf("\n%s\n",pymdb_object_to_char_p(o));
 }
 
 static PyObject* tablenames(MdbHandle * mdb){
@@ -47,7 +42,7 @@ static PyObject* tablenames(MdbHandle * mdb){
 			continue;
 		
 		if(strlen(entry->object_name))
-			PyList_Append(tableList,PY_FROM_STR(entry->object_name));
+			PyList_Append(tableList,pymdb_char_p_to_str(entry->object_name));
 	}
 	
 	assert(Py_None != tableList);
@@ -93,8 +88,8 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 		size_t length;
 		table = NULL;
 		
-		char* tablename = PY_STR(PyList_GetItem(tableList,i));
-				
+		char * tablename = (char*)pymdb_object_to_char_p(PyList_GetItem(tableList,i));
+		
 		if(!strlen(tablename))
 			continue;
 		
@@ -130,7 +125,7 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 	
 		for (int i=0; i<table->num_cols; i++) {			
 			col=(MdbColumn *)g_ptr_array_index(table->columns,i);
-			PyList_Append(headerList, PY_FROM_STR(col->name));
+			PyList_Append(headerList, pymdb_char_p_to_str(col->name));
 		}
 						
 		while(mdb_fetch_row(table)) {	
@@ -149,7 +144,7 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 						length = bound_lens[i];
 					}
 					
-					PyList_Append(row,PY_FROM_STR(value));
+					PyList_Append(row,pymdb_char_p_to_str(value));
 					
 					if (col->col_type == MDB_OLE)
 						free(value);
@@ -162,9 +157,9 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 		g_free(bound_values);
 		g_free(bound_lens);
 		
-		PyDict_SetItem(tableObject,  PY_FROM_STR("headers"), headerList);
-		PyDict_SetItem(tableObject,  PY_FROM_STR("data"), dataList);
-		PyDict_SetItem(dbDictionary,  PY_FROM_STR(tablename), tableObject);
+		PyDict_SetItem(tableObject,  pymdb_char_p_to_str("headers"), headerList);
+		PyDict_SetItem(tableObject,  pymdb_char_p_to_str("data"), dataList);
+		PyDict_SetItem(dbDictionary,  pymdb_char_p_to_str(tablename), tableObject);
 	}
 	
 	mdb_close(mdb);		
