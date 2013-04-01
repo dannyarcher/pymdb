@@ -172,79 +172,81 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 
 }
 
-struct module_state {
-    PyObject *error;
-};
+extern "C" {
+	struct module_state {
+	    PyObject *error;
+	};
 
-static PyMethodDef pymdbbin_methods[] =
-{
-	 {"parsefile_table_dictionary", parsefile_table_dictionary, METH_VARARGS, "parse mdb for accessfile"},
-     {NULL, NULL, 0, NULL}
-};
+	static PyMethodDef pymdbbin_methods[] =
+	{
+		 {"parsefile_table_dictionary", parsefile_table_dictionary, METH_VARARGS, "parse mdb for accessfile"},
+	     {NULL, NULL, 0, NULL}
+	};
 
-#if PY_MAJOR_VERSION >= 3
-#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
-#else
-#define GETSTATE(m) (&_state)
-static struct module_state _state;
-#endif
-
-
-#if PY_MAJOR_VERSION >= 3
-
-static int pymdbbin_traverse(PyObject *m, visitproc visit, void *arg) {
-    Py_VISIT(GETSTATE(m)->error);
-    return 0;
-}
-
-static int pymdbbin_clear(PyObject *m) {
-    Py_CLEAR(GETSTATE(m)->error);
-    return 0;
-}
+	#if PY_MAJOR_VERSION >= 3
+	#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+	#else
+	#define GETSTATE(m) (&_state)
+	static struct module_state _state;
+	#endif
 
 
-static struct PyModuleDef moduledef = {
-        PyModuleDef_HEAD_INIT,
-        "pymdbbin",
-        NULL,
-        sizeof(struct module_state),
-        pymdbbin_methods,
-        NULL,
-        pymdbbin_traverse,
-        pymdbbin_clear,
-        NULL
-};
+	#if PY_MAJOR_VERSION >= 3
 
-#define INITERROR return NULL
+	static int pymdbbin_traverse(PyObject *m, visitproc visit, void *arg) {
+	    Py_VISIT(GETSTATE(m)->error);
+	    return 0;
+	}
 
-PyObject *
-PyInit_pymdbbinn(void)
+	static int pymdbbin_clear(PyObject *m) {
+	    Py_CLEAR(GETSTATE(m)->error);
+	    return 0;
+	}
 
-#else
-#define INITERROR return
 
-void
-initpymdbbin(void)
-#endif
+	struct PyModuleDef moduledef = {
+	        PyModuleDef_HEAD_INIT,
+	        "pymdbbin",
+	        NULL,
+	        sizeof(struct module_state),
+	        pymdbbin_methods,
+	        NULL,
+	        pymdbbin_traverse,
+	        pymdbbin_clear,
+	        NULL
+	};
 
-{
-#if PY_MAJOR_VERSION >= 3
-    PyObject *module = PyModule_Create(&moduledef);
-#else
-    PyObject *module = Py_InitModule("pymdbbin", pymdbbin_methods);
-#endif
+	#define INITERROR return NULL
 
-    if (module == NULL)
-        INITERROR;
-    struct module_state *st = GETSTATE(module);
+	extern PyObject *
+	PyInit_pymdbbin(void)
 
-    st->error = PyErr_NewException((char *)"pymdbbin.Error", NULL, NULL);
-    if (st->error == NULL) {
-        Py_DECREF(module);
-        INITERROR;
-    }
+	#else
+	#define INITERROR return
 
-#if PY_MAJOR_VERSION >= 3
-    return module;
-#endif
+	void
+	initpymdbbin(void)
+	#endif
+
+	{
+	#if PY_MAJOR_VERSION >= 3
+	    PyObject *module = PyModule_Create(&moduledef);
+	#else
+	    PyObject *module = Py_InitModule("pymdbbin", pymdbbin_methods);
+	#endif
+
+	    if (module == NULL)
+	        INITERROR;
+	    struct module_state *st = GETSTATE(module);
+
+	    st->error = PyErr_NewException((char *)"pymdbbin.Error", NULL, NULL);
+	    if (st->error == NULL) {
+	        Py_DECREF(module);
+	        INITERROR;
+	    }
+
+	#if PY_MAJOR_VERSION >= 3
+	    return module;
+	#endif
+	}
 }
