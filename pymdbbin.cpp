@@ -1,20 +1,25 @@
 #include <Python.h>
 #include <stdio.h>
 #include <mdbtools.h>
- 
- 
-enum parsefile_Stratergy {
-    CLUBS    = 1,
-    DIAMONDS = 2,
-    HEARTS   = 4,
-    SPADES   = 8
-};
 
+
+#ifdef IS_PYTHON3
+	 #define PY_STR(s) PyString_AsString(s)
+#else
+	#define PY_STR(s) PyBytes_AsString(s)
+#endif
+
+
+#ifdef IS_PYTHON3
+	#define PY_FROM_STR(s) PyString_FromString(s)
+#else
+	#define PY_FROM_STR(s) PyBytes_FromString(s)
+#endif
  
 void logObject (PyObject* o)
 {
 	PyObject * objectsRepresentation = PyObject_Repr(o);
-	char * s = PyString_AsString(objectsRepresentation);
+	char * s = PY_STR(objectsRepresentation);
 	printf("\n%s\n",s);
 }
 
@@ -42,7 +47,7 @@ static PyObject* tablenames(MdbHandle * mdb){
 			continue;
 		
 		if(strlen(entry->object_name))
-			PyList_Append(tableList,PyString_FromString(entry->object_name));
+			PyList_Append(tableList,PY_FROM_STR(entry->object_name));
 	}
 	
 	assert(Py_None != tableList);
@@ -88,7 +93,7 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 		size_t length;
 		table = NULL;
 		
-		char* tablename = PyString_AsString(PyList_GetItem(tableList,i));
+		char* tablename = PY_STR(PyList_GetItem(tableList,i));
 				
 		if(!strlen(tablename))
 			continue;
@@ -125,7 +130,7 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 	
 		for (int i=0; i<table->num_cols; i++) {			
 			col=(MdbColumn *)g_ptr_array_index(table->columns,i);
-			PyList_Append(headerList, PyString_FromString(col->name));
+			PyList_Append(headerList, PY_FROM_STR(col->name));
 		}
 						
 		while(mdb_fetch_row(table)) {	
@@ -144,7 +149,7 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 						length = bound_lens[i];
 					}
 					
-					PyList_Append(row,PyString_FromString(value));
+					PyList_Append(row,PY_FROM_STR(value));
 					
 					if (col->col_type == MDB_OLE)
 						free(value);
@@ -157,9 +162,9 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 		g_free(bound_values);
 		g_free(bound_lens);
 		
-		PyDict_SetItem(tableObject,  PyString_FromString("headers"), headerList);
-		PyDict_SetItem(tableObject,  PyString_FromString("data"), dataList);
-		PyDict_SetItem(dbDictionary,  PyString_FromString(tablename), tableObject);
+		PyDict_SetItem(tableObject,  PY_FROM_STR("headers"), headerList);
+		PyDict_SetItem(tableObject,  PY_FROM_STR("data"), dataList);
+		PyDict_SetItem(dbDictionary,  PY_FROM_STR(tablename), tableObject);
 	}
 	
 	mdb_close(mdb);		
@@ -167,17 +172,79 @@ static PyObject* parsefile_table_dictionary	(PyObject* self, PyObject* args)
 
 }
 
+struct module_state {
+    PyObject *error;
+};
 
- 
-static PyMethodDef RotemMethods[] =
+static PyMethodDef pymdbbin_methods[] =
 {
 	 {"parsefile_table_dictionary", parsefile_table_dictionary, METH_VARARGS, "parse mdb for accessfile"},
      {NULL, NULL, 0, NULL}
 };
- 
-PyMODINIT_FUNC
- 
+
+#if PY_MAJOR_VERSION >= 3
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+#else
+#define GETSTATE(m) (&_state)
+static struct module_state _state;
+#endif
+
+
+#if PY_MAJOR_VERSION >= 3
+
+static int pymdbbin_traverse(PyObject *m, visitproc visit, void *arg) {
+    Py_VISIT(GETSTATE(m)->error);
+    return 0;
+}
+
+static int pymdbbin_clear(PyObject *m) {
+    Py_CLEAR(GETSTATE(m)->error);
+    return 0;
+}
+
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "pymdbbin",
+        NULL,
+        sizeof(struct module_state),
+        pymdbbin_methods,
+        NULL,
+        pymdbbin_traverse,
+        pymdbbin_clear,
+        NULL
+};
+
+#define INITERROR return NULL
+
+PyObject *
+PyInit_pymdbbinn(void)
+
+#else
+#define INITERROR return
+
+void
 initpymdbbin(void)
+#endif
+
 {
-     (void) Py_InitModule("pymdbbin", RotemMethods);
+#if PY_MAJOR_VERSION >= 3
+    PyObject *module = PyModule_Create(&moduledef);
+#else
+    PyObject *module = Py_InitModule("pymdbbin", pymdbbin_methods);
+#endif
+
+    if (module == NULL)
+        INITERROR;
+    struct module_state *st = GETSTATE(module);
+
+    st->error = PyErr_NewException((char *)"pymdbbin.Error", NULL, NULL);
+    if (st->error == NULL) {
+        Py_DECREF(module);
+        INITERROR;
+    }
+
+#if PY_MAJOR_VERSION >= 3
+    return module;
+#endif
 }

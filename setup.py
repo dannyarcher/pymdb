@@ -45,7 +45,7 @@ setup (name = 'pymdb',
             "/usr/lib/x86_64-linux-gnu/glib-2.0/include"],
         packages = find_packages(),
         features={'pymdbbin': pymdbbin},
-        install_requires=['distribute', 'enum'],
+        install_requires=['distribute'],
         tests_require=['nose'],
         test_suite='nose.collector',
 )
