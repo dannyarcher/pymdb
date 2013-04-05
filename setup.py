@@ -37,7 +37,7 @@ pymdb = Feature(
 
 
 setup (name = 'pymdb',
-        version = '0.1.60',
+        version = '0.1.70',
         description = 'pymdb module python biniding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
@@ -61,7 +61,7 @@ setup (name = 'pymdb',
             "/usr/lib/glib-2.0/include",
             "/usr/lib/x86_64-linux-gnu/glib-2.0/include"],
         packages = find_packages(),
-        features={'pymdbbin': pymdbbin,'pymdb':pymdb },
+        features={'pymdb':pymdb , 'pymdbbin': pymdbbin,},
         install_requires=['distribute'],
         tests_require=['nose'],
         test_suite='nose.collector',
