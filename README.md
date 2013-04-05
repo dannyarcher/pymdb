@@ -7,6 +7,6 @@ A pymdb python module to parse MS Access mdb files.
   - returns a dictionary of tables
   
 
-  To install
-  ==========
-  python setup.py install
+To install
+==========
+`pip install pymdb`
