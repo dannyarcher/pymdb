@@ -10,7 +10,6 @@ pymdbbin = Feature(
             'mdbtools/src/libmdb/dump.c',
             'mdbtools/src/libmdb/iconv.c',
             'mdbtools/src/libmdb/like.c',
-            'mdbtools/src/libmdb/mem.c',
             'mdbtools/src/libmdb/options.c',
             'mdbtools/src/libmdb/sargs.c',
             'mdbtools/src/libmdb/table.c',
@@ -30,9 +29,15 @@ pymdbbin = Feature(
     ]
 )
 
+pymdb = Feature(
+        'pymdb module python biniding of mdbtools',
+        standard=True,
+        py_modules=['pymdb']
+)
+
 
 setup (name = 'pymdb',
-        version = '0.1.30',
+        version = '0.1.60',
         description = 'pymdb module python biniding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
@@ -56,7 +61,7 @@ setup (name = 'pymdb',
             "/usr/lib/glib-2.0/include",
             "/usr/lib/x86_64-linux-gnu/glib-2.0/include"],
         packages = find_packages(),
-        features={'pymdbbin': pymdbbin},
+        features={'pymdbbin': pymdbbin,'pymdb':pymdb },
         install_requires=['distribute'],
         tests_require=['nose'],
         test_suite='nose.collector',
