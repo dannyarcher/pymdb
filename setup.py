@@ -24,7 +24,16 @@ pymdbbin = Feature(
             'mdbtools/src/libmdb/stats.c',
             'mdbtools/src/libmdb/worktable.c'
             ],
-            libraries=['glib-2.0']
+            libraries=['glib-2.0'],
+            include_dirs=[
+                'mdbtools/include', 
+                '../../mdbtools/include', 
+                '/usr/local/include', 
+                "/usr/local/include/glib-2.0",
+                "/usr/local/Cellar/glib/2.34.3/lib/glib-2.0/include",
+                "/usr/include/glib-2.0",
+                "/usr/lib/glib-2.0/include",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include"]
         )
     ]
 )
@@ -37,7 +46,7 @@ pymdb = Feature(
 
 
 setup (name = 'pymdb',
-        version = '0.1.70',
+        version = '0.1.73',
         description = 'pymdb module python biniding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
@@ -51,22 +60,12 @@ setup (name = 'pymdb',
             "Topic :: Software Development :: Libraries :: Python Modules",
             "Topic :: Utilities"
         ],
-        include_dirs=[
-            'mdbtools/include', 
-            '../../mdbtools/include', 
-            '/usr/local/include', 
-            "/usr/local/include/glib-2.0",
-            "/usr/local/Cellar/glib/2.34.3/lib/glib-2.0/include",
-            "/usr/include/glib-2.0",
-            "/usr/lib/glib-2.0/include",
-            "/usr/lib/x86_64-linux-gnu/glib-2.0/include"],
+
         packages = find_packages(),
-        features={'pymdb':pymdb , 'pymdbbin': pymdbbin,},
+        features={'pymdbbin': pymdbbin , 'pymdb':pymdb},
         install_requires=['distribute'],
         tests_require=['nose'],
-        test_suite='nose.collector',
-        package_data={'pymdbbin': ['mbtools/include/*.h']},
-            
+        test_suite='nose.collector'
 )
 
         
