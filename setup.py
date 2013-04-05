@@ -32,8 +32,20 @@ pymdbbin = Feature(
 
 
 setup (name = 'pymdb',
-        version = '0.1',
+        version = '0.1.30',
         description = 'pymdb module python biniding of mdbtools',
+        author="Danny Archer",
+        author_email="danny@inbeta.org",
+        license="LGPL",
+        keywords = "microsoft, mdb, access, database, python",
+        classifiers = [
+            "Intended Audience :: Developers",
+            "Operating System :: OS Independent",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.3",
+            "Topic :: Software Development :: Libraries :: Python Modules",
+            "Topic :: Utilities"
+        ],
         include_dirs=[
             'mdbtools/include', 
             '../../mdbtools/include', 
@@ -48,6 +60,8 @@ setup (name = 'pymdb',
         install_requires=['distribute'],
         tests_require=['nose'],
         test_suite='nose.collector',
+        package_data={'pymdbbin': ['mbtools/include/*.h']},
+            
 )
 
         

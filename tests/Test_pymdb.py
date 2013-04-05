@@ -53,20 +53,20 @@ class pymdb(unittest.TestCase):
         import pymdb
         result = pymdb.parsefile(accessfile)
         
-        self.assert_(
+        self.assertTrue(
             result == {
                 'Table2': {'headers': ['ID','Field1'], 'data': [['1', 'Thing 1'], ['2', 'Thing 2'], ['3', 'Thing 3']]}, 
                 'Table3': {'headers': ['ID','Field1'], 'data': [['1', 'Thing 1'], ['2', 'Thing 2'], ['3', 'Thing 3']]}, 
                 'Table1': {'headers': ['ID','Field1'], 'data': [['1', 'Thing 1'], ['2', 'Thing 2'], ['3', 'Thing 3']]}
             }
         )
-        self.assert_( "Table1" in result.keys())
-        self.assert_( "Table2" in result.keys())
-        self.assert_( "Table3" in result.keys())
+        self.assertTrue( "Table1" in result.keys())
+        self.assertTrue( "Table2" in result.keys())
+        self.assertTrue( "Table3" in result.keys())
         
         for entry in result.keys():
             headercount = len(result[entry]["headers"])
-            self.assert_( len(result[entry]['data'] ) >= 3 )
+            self.assertTrue( len(result[entry]['data'] ) >= 3 )
             for element in result[entry]['data']:
-                self.assert_( len(element) >= 2 )
-                self.assert_( len(element) == headercount )
+                self.assertTrue( len(element) >= 2 )
+                self.assertTrue( len(element) == headercount )

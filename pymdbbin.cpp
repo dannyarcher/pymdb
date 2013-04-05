@@ -6,8 +6,6 @@
 	#define pymdb_object_to_char_p(o)   PyBytes_AsString(o) 
 	#define pymdb_char_p_to_str(s)		PyBytes_FromString(s) 
 	#define pymdb_char_p_to_string(s)	PyUnicode_FromFormat("%s", s)
-
-//PyBytes_FromString(s)
 			
 #else
 	#define pymdb_object_to_char_p(o)	PyString_AsString(o)
