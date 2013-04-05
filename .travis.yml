@@ -5,6 +5,5 @@ python:
   - "3.3"
 # command to install dependencies
 install:
-  - "python setup.py sdist"
   - "pip install . --use-mirrors"
 script: nosetests
