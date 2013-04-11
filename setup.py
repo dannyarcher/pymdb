@@ -46,7 +46,7 @@ pymdb = Feature(
 
 
 setup (name = 'pymdb',
-        version = '0.1.73',
+        version = '0.1.74',
         description = 'pymdb module python biniding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
