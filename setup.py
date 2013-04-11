@@ -67,5 +67,4 @@ setup (name = 'pymdb',
         tests_require=['nose'],
         test_suite='nose.collector'
 )
-
         
