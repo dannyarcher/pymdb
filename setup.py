@@ -63,7 +63,7 @@ setup (name = 'pymdb',
 
         packages = find_packages(),
         features={'pymdbbin': pymdbbin , 'pymdb':pymdb},
-        install_requires=['distribute'],
+        install_requires=[],
         tests_require=['nose'],
         test_suite='nose.collector'
 )
