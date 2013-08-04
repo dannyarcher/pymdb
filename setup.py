@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup, Feature, Extension
 
 pymdbbin = Feature(
-    'pymdbbin module python biniding of mdbtools',
+    'pymdbbin module python binding of mdbtools',
     standard=True,
     ext_modules = [
         Extension('pymdbbin', sources = [
