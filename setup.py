@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup, Feature, Extension
 
 pymdbbin = Feature(
-    'pymdbbin module python biniding of mdbtools',
+    'pymdbbin module python binding of mdbtools',
     standard=True,
     ext_modules = [
         Extension('pymdbbin', sources = [
@@ -39,7 +39,7 @@ pymdbbin = Feature(
 )
 
 pymdb = Feature(
-        'pymdb module python biniding of mdbtools',
+        'pymdb module python binding of mdbtools',
         standard=True,
         py_modules=['pymdb']
 )
@@ -47,9 +47,10 @@ pymdb = Feature(
 
 setup (name = 'pymdb',
         version = '0.1.74',
-        description = 'pymdb module python biniding of mdbtools',
+        description = 'pymdb module python binding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
+        url='https://github.com/dannyarcher/pymdb',
         license="LGPL",
         keywords = "microsoft, mdb, access, database, python",
         classifiers = [
