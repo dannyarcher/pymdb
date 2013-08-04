@@ -50,6 +50,7 @@ setup (name = 'pymdb',
         description = 'pymdb module python biniding of mdbtools',
         author="Danny Archer",
         author_email="danny@inbeta.org",
+        url='https://github.com/dannyarcher/pymdb',
         license="LGPL",
         keywords = "microsoft, mdb, access, database, python",
         classifiers = [
